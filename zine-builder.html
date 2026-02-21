@@ -1534,7 +1534,7 @@ function downloadZine() {
 <div class="zine-top-bar no-print">
   <h1>${theme.title}</h1>
   <p>${theme.subtitle} · generated at remy's world</p>
-  <button class="share-btn" id="share-btn" onclick="copyLink()">💌 copy link to share</button>
+  <button class="share-btn" id="share-btn" onclick="sendZine()">💌 send as text or email</button>
 </div>
 
 ${pagesHTML}
@@ -1543,30 +1543,54 @@ ${pagesHTML}
 
 <script>
 document.querySelectorAll('.zine-actions').forEach(el => el.remove());
-function copyLink() {
-  const btn = document.getElementById('share-btn');
-  navigator.clipboard.writeText(window.location.href).then(() => {
-    btn.textContent = '✓ link copied!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '💌 copy link to share';
-      btn.classList.remove('copied');
-    }, 2500);
-  }).catch(() => {
-    // fallback — select the url manually
-    const dummy = document.createElement('input');
-    dummy.value = window.location.href;
-    document.body.appendChild(dummy);
-    dummy.select();
-    document.execCommand('copy');
-    document.body.removeChild(dummy);
-    btn.textContent = '✓ link copied!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '💌 copy link to share';
-      btn.classList.remove('copied');
-    }, 2500);
-  });
+
+function getZineText() {
+  // Pull the poem (page 3 pre-line content) and letter (page 4 body)
+  const titleEl   = document.querySelector('.zine-page-title');
+  const poemEl    = document.querySelectorAll('.zine-page')[2]?.querySelector('.zine-body');
+  const letterEl  = document.querySelectorAll('.zine-page')[3]?.querySelector('.zine-body');
+  const dedEl     = document.querySelector('.dedication-name');
+
+  const title     = titleEl  ? titleEl.textContent.trim()  : '${theme.title}';
+  const poem      = poemEl   ? poemEl.textContent.trim()   : '';
+  const letter    = letterEl ? letterEl.textContent.trim() : '';
+  const ded       = dedEl    ? '\\nfor ' + dedEl.textContent.trim() + '\\n' : '\\n';
+
+  return (
+    '🌙 ' + title + ded +
+    '— — —\\n\\n' +
+    poem + '\\n\\n' +
+    '— — —\\n\\n' +
+    letter + '\\n\\n' +
+    '— — —\\n' +
+    'made for you at remy\\'s world\\n' +
+    'make your own quiet zine → remy-dova-world.netlify.app'
+  );
+}
+
+function sendZine() {
+  const btn  = document.getElementById('share-btn');
+  const text = getZineText();
+  const title = '${theme.title} · a zine from remy\\'s world';
+
+  // Try Web Share API first (phones, tablets, modern desktop)
+  if (navigator.share) {
+    navigator.share({ title: title, text: text })
+      .then(() => {
+        btn.textContent = '✓ here, i made this for you ✦';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '💌 send as text or email';
+          btn.classList.remove('copied');
+        }, 3000);
+      })
+      .catch(() => {}); // user cancelled — do nothing
+  } else {
+    // Fallback: open mailto (desktop browsers that don't support share)
+    const subject = encodeURIComponent(title);
+    const body    = encodeURIComponent(text);
+    window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+  }
 }
 <\/script>
 </body>
@@ -1579,6 +1603,7 @@ function copyLink() {
 </script>
 </body>
 </html>
+
 
 
 
