@@ -669,8 +669,6 @@
 </head>
 <body>
 
-<!-- Moon cursor -->
-<div id="moon-cursor">🌙</div>
 
 <!-- Rain canvas -->
 <canvas id="rain-canvas"></canvas>
@@ -871,13 +869,32 @@
 
 <script>
 /* ── MOON CURSOR ── */
-const moonCursor = document.getElementById('moon-cursor');
-document.addEventListener('mousemove', e => {
-  moonCursor.style.left = e.clientX + 'px';
-  moonCursor.style.top  = e.clientY + 'px';
-});
-document.addEventListener('mousedown', () => moonCursor.classList.add('clicking'));
-document.addEventListener('mouseup',   () => moonCursor.classList.remove('clicking'));
+(function() {
+  // Remove any existing cursor element and recreate at document root level
+  const old = document.getElementById('moon-cursor');
+  if (old) old.remove();
+
+  const cursor = document.createElement('div');
+  cursor.id = 'moon-cursor';
+  cursor.textContent = '🌙';
+  // Append directly to documentElement to escape all stacking contexts
+  document.documentElement.appendChild(cursor);
+
+  let mx = -100, my = -100;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+    cursor.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+  }, { passive: true });
+
+  document.addEventListener('mousedown', () => {
+    cursor.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%)) scale(0.75)`;
+  });
+  document.addEventListener('mouseup', () => {
+    cursor.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+  });
+})();
 
 /* ── RAIN CANVAS ── */
 (function(){
@@ -1033,5 +1050,6 @@ loadGuestbookPreview();
 </script>
 </body>
 </html>
+
 
 
