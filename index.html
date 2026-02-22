@@ -22,7 +22,10 @@
     --border: rgba(212,149,106,0.18);
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body, *, *:hover, a, button, input {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E") 12 12, auto !important;
+  }
   html { scroll-behavior: smooth; }
 
   body {
@@ -172,7 +175,7 @@
   }
   .player-controls { display: flex; align-items: center; gap: 0.3rem; }
   .player-btn {
-    background: none; border: none; cursor: none;
+    background: none; border: none; cursor: inherit;
     color: var(--text-dim); font-size: 0.9rem;
     padding: 0.2rem; border-radius: 6px;
     transition: color 0.2s;
@@ -467,7 +470,7 @@
     font-family: 'Caveat', cursive; font-size: 1.15rem;
     color: var(--bg); background: linear-gradient(135deg, var(--amber), #c47c50);
     border: none; border-radius: 12px; padding: 0.8rem 1.6rem;
-    cursor: none; white-space: nowrap; flex-shrink: 0;
+    cursor: inherit; white-space: nowrap; flex-shrink: 0;
     transition: all 0.25s ease; font-weight: 600;
     text-decoration: none; display: inline-block;
   }
@@ -868,46 +871,7 @@
 </footer>
 
 <script>
-/* ── MOON CURSOR — canvas based, cannot be clipped by z-index or backdrop-filter ── */
-(function() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'moon-cursor-canvas';
-  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2147483647;';
-  document.documentElement.appendChild(canvas);
-
-  const ctx = canvas.getContext('2d');
-  let mx = -100, my = -100, clicking = false;
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  function drawMoon() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const scale = clicking ? 0.75 : 1;
-    const size = 22 * scale;
-    ctx.save();
-    ctx.translate(mx, my);
-    ctx.font = `${size}px serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    // glow
-    ctx.shadowColor = 'rgba(212,149,106,0.8)';
-    ctx.shadowBlur = 10;
-    ctx.fillText('🌙', 0, 0);
-    ctx.restore();
-    requestAnimationFrame(drawMoon);
-  }
-
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
-  document.addEventListener('mousedown', () => { clicking = true; });
-  document.addEventListener('mouseup', () => { clicking = false; });
-
-  drawMoon();
-})();
+/* moon cursor handled by CSS */
 
 /* ── RAIN CANVAS ── */
 (function(){
