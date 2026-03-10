@@ -135,6 +135,6 @@ every page links to remy's free app for introverts — her sister project:
 
 ---
 
-*built with Claude Sonnet 4.6 · hosted on Netlify · always free for quiet souls*
+
 
 ✦ &nbsp; hey friend, welcome to remy's world &nbsp; ✦
