@@ -2,7 +2,7 @@
 
 > *a handcrafted corner of the internet for quiet souls*
 
-a free, beautiful, personal website for **remy dova** — ai lofi musician, introvert, and builder of quiet spaces. built with love, rain sounds, and Claude AI.
+a beautiful, personal zine for **remy dova** — ai lofi musician, introvert, and builder of quiet spaces. built with love and rain sounds.
 
 ---
 
@@ -11,7 +11,6 @@ a free, beautiful, personal website for **remy dova** — ai lofi musician, intr
 remy's world is a cozy, handcrafted personal web home inspired by the warmth and personality of the early personal web era — the time when websites felt like they were made by a real person who actually lived there. fans can:
 
 - 🎵 listen to lofi music playing softly in the background
-- 🛋️ explore remy's room — her bookshelf, her cat miso, her midi keyboard
 - 📖 generate their own unique AI-written zines about introvert life
 - 📝 leave handwritten-style notes in the guestbook
 - 👤 create a fan page and find other quiet souls
