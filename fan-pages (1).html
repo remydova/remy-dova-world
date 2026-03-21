@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>quiet souls · remy's world</title>
+<meta name="description" content="a wall of quiet souls — remy's community of introverts, dreamers, and slow-lifers.">
+<meta name="theme-color" content="#0c0c18">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c18;
+  --surface: #13131f;
+  --surface2: #1a1a2e;
+  --amber: #d4956a;
+  --amber-dim: rgba(212,149,106,0.12);
+  --amber-border: rgba(212,149,106,0.22);
+  --teal: #7fb5a0;
+  --teal-dim: rgba(127,181,160,0.12);
+  --lavender: #9b8bb4;
+  --lav-dim: rgba(155,139,180,0.12);
+  --midnight: #6b7fa3;
+  --rose: #c4847a;
+  --text: #e8ddd0;
+  --text-dim: rgba(232,221,208,0.55);
+  --text-muted: rgba(232,221,208,0.28);
+  --border: rgba(232,221,208,0.08);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Lora', serif; min-height: 100vh;
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ctext y='18' font-size='18'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E") 12 12, auto;
+}
+
+/* GRAIN */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* RAIN */
+#rain-canvas { position:fixed; inset:0; pointer-events:none; z-index:1; opacity:0.35; }
+
+/* STARS */
+#stars-container { position:fixed; inset:0; pointer-events:none; z-index:1; }
+.star {
+  position:absolute; border-radius:50%;
+  background:rgba(232,221,208,0.7);
+  animation: twinkle ease-in-out infinite alternate;
+}
+@keyframes twinkle { from{opacity:0.1;transform:scale(0.8);} to{opacity:0.9;transform:scale(1.2);} }
+
+/* PETALS */
+#petals-container { position:fixed; inset:0; pointer-events:none; z-index:2; overflow:hidden; }
+.petal {
+  position:absolute; top:-20px; font-size:0.75rem;
+  opacity:0; color:var(--amber); filter:blur(0.3px);
+  animation: petalFall linear infinite;
+}
+@keyframes petalFall {
+  0%{transform:translateY(-20px) rotate(0deg);opacity:0;}
+  10%{opacity:0.5;}
+  90%{opacity:0.25;}
+  100%{transform:translateY(105vh) rotate(360deg);opacity:0;}
+}
+
+/* NAV */
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(12,12,24,0.92); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem; height:56px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { font-family:'Caveat',cursive; font-size:1.3rem; color:var(--amber); text-decoration:none; }
+.nav-links { display:flex; gap:1.5rem; align-items:center; }
+.nav-links a { font-family:'Caveat',cursive; font-size:1rem; color:var(--text-dim); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--amber); }
+.nav-hideout { font-family:'Caveat',cursive; font-size:0.85rem; color:var(--teal); text-decoration:none; border:1px solid rgba(127,181,160,0.25); padding:0.25rem 0.75rem; border-radius:20px; transition:all 0.2s; }
+.nav-hideout:hover { background:var(--teal-dim); }
+
+/* PAGE HEADER */
+.page-header { text-align:center; padding:4rem 2rem 1.5rem; position:relative; z-index:10; }
+.page-header h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:400; margin-bottom:0.5rem; }
+.page-header h1 em { color:var(--amber); font-style:italic; }
+.page-header p { color:var(--text-dim); font-style:italic; font-size:0.95rem; max-width:480px; margin:0 auto 0.5rem; }
+.soul-counter {
+  display:inline-block; font-family:'Caveat',cursive;
+  font-size:1rem; color:var(--teal); opacity:0.8;
+  border:1px solid rgba(127,181,160,0.2);
+  padding:0.3rem 1rem; border-radius:20px; margin-top:0.5rem;
+}
+
+/* MAIN */
+.main { max-width:1100px; margin:0 auto; padding:0 1.5rem 6rem; position:relative; z-index:10; }
+
+/* FILTER BAR */
+.filter-bar {
+  display:flex; align-items:center; gap:0.5rem;
+  flex-wrap:wrap; margin-bottom:2rem;
+  padding:1rem 1.25rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+.filter-label { font-family:'Caveat',cursive; font-size:0.85rem; color:var(--text-muted); margin-right:0.25rem; }
+.filter-chip {
+  font-family:'Caveat',cursive; font-size:0.9rem;
+  padding:0.25rem 0.85rem; border-radius:20px;
+  border:1px solid var(--border); background:transparent;
+  color:var(--text-dim); cursor:pointer; transition:all 0.2s;
+}
+.filter-chip:hover { border-color:var(--amber-border); color:var(--amber); }
+.filter-chip.active { border-color:var(--amber); color:var(--amber); background:var(--amber-dim); }
+
+/* CREATE CARD BUTTON */
+.create-btn-wrap { text-align:center; margin-bottom:2.5rem; }
+.create-btn {
+  background:var(--amber); color:var(--bg);
+  border:none; border-radius:30px;
+  padding:0.9rem 2.5rem;
+  font-family:'Playfair Display',serif;
+  font-size:1rem; font-weight:700;
+  cursor:pointer; transition:all 0.25s;
+  box-shadow:0 0 30px rgba(212,149,106,0.25);
+}
+.create-btn:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(212,149,106,0.4); }
+
+/* FAN CARD GRID */
+.fan-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:1.25rem;
+  margin-bottom:2rem;
+}
+
+/* FAN CARD */
+.fan-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:1.5rem;
+  position:relative;
+  transition:all 0.25s;
+  animation:cardIn 0.4s ease both;
+}
+@keyframes cardIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
+.fan-card:hover { border-color:var(--card-accent, var(--amber-border)); transform:translateY(-2px); }
+.fan-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--card-accent-line, linear-gradient(90deg, var(--amber), rgba(212,149,106,0.3)));
+  border-radius:16px 16px 0 0;
+}
+
+.card-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1rem; }
+.card-emoji { font-size:2rem; line-height:1; }
+.card-date { font-family:'Caveat',cursive; font-size:0.7rem; color:var(--text-muted); }
+
+.card-name { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:400; color:var(--text); margin-bottom:0.2rem; }
+.card-location { font-family:'Caveat',cursive; font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; }
+.card-bio { font-size:0.82rem; color:var(--text-dim); font-style:italic; line-height:1.7; margin-bottom:1rem; }
+
+.card-fields { display:flex; flex-direction:column; gap:0.5rem; }
+.card-field { display:flex; gap:0.5rem; align-items:baseline; }
+.card-field-label { font-family:'Caveat',cursive; font-size:0.75rem; color:var(--text-muted); min-width:64px; flex-shrink:0; }
+.card-field-value { font-size:0.8rem; color:var(--text-dim); line-height:1.5; }
+
+.card-joy {
+  margin-top:1rem; padding-top:0.75rem;
+  border-top:1px solid var(--border);
+  font-size:0.8rem; color:var(--text-dim);
+  font-style:italic; line-height:1.6;
+}
+.card-joy-label { font-family:'Caveat',cursive; font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem; font-style:normal; }
+
+.card-mood-dot {
+  display:inline-block; width:8px; height:8px;
+  border-radius:50%; margin-right:0.4rem;
+  vertical-align:middle;
+}
+
+/* MODAL */
+.modal-overlay {
+  position:fixed; inset:0; z-index:500;
+  background:rgba(12,12,24,0.92);
+  backdrop-filter:blur(8px);
+  display:none; align-items:center; justify-content:center;
+  padding:1.5rem;
+}
+.modal-overlay.show { display:flex; }
+.modal {
+  background:var(--surface);
+  border:1px solid var(--amber-border);
+  border-radius:20px;
+  padding:2rem 2rem 1.5rem;
+  max-width:500px; width:100%;
+  max-height:90vh; overflow-y:auto;
+  position:relative;
+}
+.modal-close {
+  position:absolute; top:1rem; right:1rem;
+  background:none; border:none; cursor:pointer;
+  font-family:'Caveat',cursive; font-size:1.2rem;
+  color:var(--text-muted); transition:color 0.2s;
+}
+.modal-close:hover { color:var(--text); }
+.modal h2 { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:400; margin-bottom:0.4rem; }
+.modal-subtitle { font-family:'Caveat',cursive; font-size:0.9rem; color:var(--text-dim); margin-bottom:1.5rem; }
+
+.form-group { margin-bottom:1rem; }
+.form-label { font-family:'Caveat',cursive; font-size:0.85rem; color:var(--text-dim); display:block; margin-bottom:0.4rem; }
+.form-input {
+  width:100%; background:var(--surface2);
+  border:1px solid var(--border); border-radius:10px;
+  padding:0.75rem 1rem; color:var(--text);
+  font-family:'Lora',serif; font-size:0.88rem;
+  outline:none; transition:border-color 0.2s; resize:none;
+}
+.form-input::placeholder { color:var(--text-muted); font-style:italic; }
+.form-input:focus { border-color:var(--amber-border); }
+
+/* EMOJI PICKER */
+.emoji-row { display:flex; flex-wrap:wrap; gap:0.5rem; }
+.emoji-btn {
+  width:38px; height:38px; border-radius:10px;
+  border:1px solid var(--border); background:var(--surface2);
+  cursor:pointer; font-size:1.2rem;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+}
+.emoji-btn:hover { border-color:var(--amber-border); transform:scale(1.1); }
+.emoji-btn.selected { border-color:var(--amber); background:var(--amber-dim); }
+
+/* MOOD PICKER */
+.mood-row { display:flex; flex-wrap:wrap; gap:0.5rem; }
+.mood-btn {
+  border-radius:20px; padding:0.35rem 1rem;
+  cursor:pointer; font-family:'Caveat',cursive; font-size:0.9rem;
+  border:1px solid; background:transparent; transition:all 0.2s;
+}
+.mood-btn.selected { color:#0c0c18 !important; }
+
+/* SUBMIT */
+.modal-submit {
+  background:var(--amber); color:var(--bg);
+  border:none; border-radius:30px;
+  padding:0.85rem 2rem; width:100%;
+  font-family:'Playfair Display',serif;
+  font-size:1rem; font-weight:700;
+  cursor:pointer; transition:all 0.25s;
+  margin-top:1.25rem;
+}
+.modal-submit:hover { box-shadow:0 0 30px rgba(212,149,106,0.4); }
+.modal-submit:disabled { opacity:0.4; cursor:not-allowed; }
+.form-note { font-family:'Caveat',cursive; font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:0.5rem; }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align:center; padding:4rem 2rem;
+  color:var(--text-muted);
+}
+.empty-state p { font-family:'Caveat',cursive; font-size:1.1rem; margin-bottom:0.5rem; }
+
+/* SUBSTACK STRIP */
+.substack-strip {
+  background:var(--surface);
+  border:1px solid rgba(127,181,160,0.2);
+  border-radius:16px; padding:2rem;
+  margin-top:2rem; text-align:center;
+}
+.substack-strip h3 { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:400; margin-bottom:0.4rem; }
+.substack-strip p { font-size:0.82rem; color:var(--text-dim); font-style:italic; margin-bottom:1rem; line-height:1.7; }
+.substack-btn {
+  display:inline-block; background:var(--teal); color:#0c0c18;
+  font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700;
+  padding:0.65rem 1.75rem; border-radius:30px; text-decoration:none;
+  transition:all 0.2s;
+}
+.substack-btn:hover { box-shadow:0 4px 20px rgba(127,181,160,0.35); transform:translateY(-1px); }
+
+/* FOOTER */
+footer {
+  text-align:center; padding:2rem 1rem 3rem;
+  border-top:1px solid var(--border);
+  position:relative; z-index:10;
+}
+footer p { font-family:'Caveat',cursive; font-size:0.9rem; color:var(--text-muted); }
+footer a { color:var(--teal); text-decoration:none; }
+
+/* MOBILE */
+@media (max-width:600px) {
+  .fan-grid { grid-template-columns:1fr; }
+  nav { padding:0 1rem; }
+  .nav-links { gap:0.75rem; }
+  .nav-hideout { display:none; }
+  .modal { padding:1.5rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="rain-canvas"></canvas>
+<div id="stars-container"></div>
+<div id="petals-container"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">remy's world 🌙</a>
+  <div class="nav-links">
+    <a href="index.html">home</a>
+    <a href="zine-builder.html">zine builder</a>
+    <a href="guestbook.html">guestbook</a>
+    <a href="fan-pages.html" class="active">quiet souls</a>
+    <a href="https://remydova.github.io/lofi-hideout/" target="_blank" class="nav-hideout">lofi hideout ☕</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>the <em>quiet souls</em> wall ✦</h1>
+  <p>a little corner of remy's world — made by the community, for the community</p>
+  <div class="soul-counter" id="soul-counter">loading quiet souls...</div>
+</div>
+
+<div class="main">
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <span class="filter-label">filter by</span>
+    <button class="filter-chip active" data-filter="all" onclick="filterCards(this)">✦ all souls</button>
+    <button class="filter-chip" data-filter="🌙" onclick="filterCards(this)">🌙 moon</button>
+    <button class="filter-chip" data-filter="🍂" onclick="filterCards(this)">🍂 autumn</button>
+    <button class="filter-chip" data-filter="☕" onclick="filterCards(this)">☕ coffee</button>
+    <button class="filter-chip" data-filter="🌧️" onclick="filterCards(this)">🌧️ rain</button>
+    <button class="filter-chip" data-filter="📚" onclick="filterCards(this)">📚 books</button>
+    <button class="filter-chip" data-filter="🧶" onclick="filterCards(this)">🧶 making</button>
+    <button class="filter-chip" data-filter="🎵" onclick="filterCards(this)">🎵 music</button>
+    <button class="filter-chip" data-filter="✦" onclick="filterCards(this)">✦ stars</button>
+  </div>
+
+  <!-- CREATE BUTTON -->
+  <div class="create-btn-wrap">
+    <button class="create-btn" onclick="openModal()">✦ claim your quiet soul card</button>
+  </div>
+
+  <!-- FAN GRID -->
+  <div class="fan-grid" id="fan-grid">
+    <div class="empty-state" id="empty-state">
+      <p>no quiet souls yet — be the first ✦</p>
+    </div>
+  </div>
+
+  <!-- SUBSTACK STRIP -->
+  <div class="substack-strip">
+    <h3>stay in remy's world ✦</h3>
+    <p>quiet notes — a monthly letter for introverts. on solitude, making things, and the beauty of a slow life.</p>
+    <a href="https://remydova.substack.com/subscribe" target="_blank" class="substack-btn">✦ subscribe to quiet notes</a>
+  </div>
+
+</div>
+
+<!-- CREATE MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>your quiet soul card ✦</h2>
+    <p class="modal-subtitle">tell us a little about yourself — it's okay to be you</p>
+
+    <div class="form-group">
+      <label class="form-label">your name or handle *</label>
+      <input type="text" class="form-input" id="field-name" placeholder="how should we know you?" maxlength="40">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">where in the world? (optional)</label>
+      <input type="text" class="form-input" id="field-location" placeholder="a city, a country, just 'somewhere quiet'..." maxlength="50">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">one sentence about you *</label>
+      <textarea class="form-input" id="field-bio" rows="2" maxlength="120" placeholder="who are you, quiet soul?"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">your spirit emoji *</label>
+      <div class="emoji-row" id="emoji-picker">
+        <button class="emoji-btn" data-emoji="🌙" onclick="selectEmoji(this)">🌙</button>
+        <button class="emoji-btn" data-emoji="🍂" onclick="selectEmoji(this)">🍂</button>
+        <button class="emoji-btn" data-emoji="☕" onclick="selectEmoji(this)">☕</button>
+        <button class="emoji-btn" data-emoji="🌧️" onclick="selectEmoji(this)">🌧️</button>
+        <button class="emoji-btn" data-emoji="📚" onclick="selectEmoji(this)">📚</button>
+        <button class="emoji-btn" data-emoji="🧶" onclick="selectEmoji(this)">🧶</button>
+        <button class="emoji-btn" data-emoji="🎵" onclick="selectEmoji(this)">🎵</button>
+        <button class="emoji-btn" data-emoji="✦" onclick="selectEmoji(this)">✦</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">color mood *</label>
+      <div class="mood-row" id="mood-picker">
+        <button class="mood-btn" data-mood="amber" onclick="selectMood(this)" style="border-color:#d4956a;color:#d4956a;">🌕 amber</button>
+        <button class="mood-btn" data-mood="teal" onclick="selectMood(this)" style="border-color:#7fb5a0;color:#7fb5a0;">🌿 teal</button>
+        <button class="mood-btn" data-mood="lavender" onclick="selectMood(this)" style="border-color:#9b8bb4;color:#9b8bb4;">🌸 lavender</button>
+        <button class="mood-btn" data-mood="midnight" onclick="selectMood(this)" style="border-color:#6b7fa3;color:#6b7fa3;">🌑 midnight</button>
+        <button class="mood-btn" data-mood="rose" onclick="selectMood(this)" style="border-color:#c4847a;color:#c4847a;">🌹 rose</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">currently listening to</label>
+      <input type="text" class="form-input" id="field-listening" placeholder="what's on your headphones?" maxlength="80">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">currently reading</label>
+      <input type="text" class="form-input" id="field-reading" placeholder="what's on your nightstand?" maxlength="80">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">one thing that made you feel quiet today</label>
+      <textarea class="form-input" id="field-joy" rows="2" maxlength="140" placeholder="a small, specific thing..."></textarea>
+    </div>
+
+    <button class="modal-submit" id="modal-submit" onclick="submitCard()">✦ add my card to the wall</button>
+    <p class="form-note">your card will appear on the wall for everyone to see ✦</p>
+  </div>
+</div>
+
+<footer>
+  <p>remy's world · <a href="https://remydova.github.io/lofi-hideout/" target="_blank">lofi hideout ☕</a> · made with love for quiet souls</p>
+  <p style="margin-top:0.4rem;font-size:0.8rem;">
+    <a href="https://www.youtube.com/@remydova" target="_blank">youtube</a> ·
+    <a href="https://open.spotify.com/artist/6iNFVldHhdj19hlOXawa3t/discography/all" target="_blank">spotify</a> ·
+    <a href="https://www.pinterest.com/remydova/" target="_blank">pinterest</a>
+  </p>
+</footer>
+
+<script>
+// ─── GLOBALS ───
+var selectedEmoji = '';
+var selectedMood = '';
+var allCards = [];
+var currentFilter = 'all';
+
+var moodColors = {
+  amber:    { primary: '#d4956a', line: 'linear-gradient(90deg,#d4956a,rgba(212,149,106,0.3))' },
+  teal:     { primary: '#7fb5a0', line: 'linear-gradient(90deg,#7fb5a0,rgba(127,181,160,0.3))' },
+  lavender: { primary: '#9b8bb4', line: 'linear-gradient(90deg,#9b8bb4,rgba(155,139,180,0.3))' },
+  midnight: { primary: '#6b7fa3', line: 'linear-gradient(90deg,#6b7fa3,rgba(107,127,163,0.3))' },
+  rose:     { primary: '#c4847a', line: 'linear-gradient(90deg,#c4847a,rgba(196,132,122,0.3))' }
+};
+
+// ─── RAIN ───
+var rainCanvas = document.getElementById('rain-canvas');
+var rainCtx = rainCanvas.getContext('2d');
+var rainDrops = [];
+function resizeRain() { rainCanvas.width = window.innerWidth; rainCanvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeRain); resizeRain();
+for (var i = 0; i < 90; i++) {
+  rainDrops.push({ x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, len: Math.random()*16+6, speed: Math.random()*2+1.5, opacity: Math.random()*0.28+0.04 });
+}
+function drawRain() {
+  rainCtx.clearRect(0,0,rainCanvas.width,rainCanvas.height);
+  rainDrops.forEach(function(d) {
+    rainCtx.beginPath(); rainCtx.moveTo(d.x,d.y); rainCtx.lineTo(d.x-d.len*0.2,d.y+d.len);
+    rainCtx.strokeStyle='rgba(180,200,220,'+d.opacity+')'; rainCtx.lineWidth=0.8; rainCtx.stroke();
+    d.y+=d.speed;
+    if(d.y>rainCanvas.height){d.y=-d.len;d.x=Math.random()*rainCanvas.width;}
+  });
+  requestAnimationFrame(drawRain);
+}
+drawRain();
+
+// ─── STARS ───
+(function(){
+  var sc=document.getElementById('stars-container');
+  for(var i=0;i<60;i++){
+    var s=document.createElement('div'); s.className='star';
+    var sz=Math.random()*2+0.5;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-duration:'+(Math.random()*4+2)+'s;animation-delay:'+(Math.random()*4)+'s;';
+    sc.appendChild(s);
+  }
+})();
+
+// ─── PETALS ───
+(function(){
+  var pc=document.getElementById('petals-container');
+  var chars=['✿','❀','✽','❁'];
+  for(var i=0;i<14;i++){
+    var p=document.createElement('div'); p.className='petal';
+    p.textContent=chars[Math.floor(Math.random()*chars.length)];
+    p.style.left=Math.random()*100+'vw';
+    p.style.animationDuration=(Math.random()*14+10)+'s';
+    p.style.animationDelay=(Math.random()*14)+'s';
+    pc.appendChild(p);
+  }
+})();
+
+// ─── STORAGE ───
+var STORAGE_KEY = 'remy-fan-pages-v1';
+
+function loadCards() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveCards(cards) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cards)); } catch(e) {}
+}
+
+// ─── MODAL ───
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ─── EMOJI + MOOD SELECTION ───
+function selectEmoji(btn) {
+  document.querySelectorAll('.emoji-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selectedEmoji = btn.dataset.emoji;
+}
+function selectMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(function(b) {
+    b.classList.remove('selected');
+    b.style.background = 'transparent';
+    b.style.color = b.style.borderColor;
+  });
+  btn.classList.add('selected');
+  selectedMood = btn.dataset.mood;
+  btn.style.background = btn.style.borderColor;
+  btn.style.color = '#0c0c18';
+}
+
+// ─── SUBMIT ───
+function submitCard() {
+  var name = document.getElementById('field-name').value.trim();
+  var bio = document.getElementById('field-bio').value.trim();
+
+  if (!name) { alert('please add your name or handle ✦'); return; }
+  if (!bio) { alert('please add one sentence about yourself ✦'); return; }
+  if (!selectedEmoji) { alert('please pick a spirit emoji ✦'); return; }
+  if (!selectedMood) { alert('please pick a color mood ✦'); return; }
+
+  var card = {
+    id: Date.now(),
+    name: name,
+    location: document.getElementById('field-location').value.trim(),
+    bio: bio,
+    emoji: selectedEmoji,
+    mood: selectedMood,
+    listening: document.getElementById('field-listening').value.trim(),
+    reading: document.getElementById('field-reading').value.trim(),
+    joy: document.getElementById('field-joy').value.trim(),
+    date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  };
+
+  var cards = loadCards();
+  cards.unshift(card);
+  saveCards(cards);
+
+  resetForm();
+  closeModal();
+  renderCards();
+}
+
+function resetForm() {
+  ['field-name','field-location','field-bio','field-listening','field-reading','field-joy'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.querySelectorAll('.emoji-btn').forEach(function(b) { b.classList.remove('selected'); });
+  document.querySelectorAll('.mood-btn').forEach(function(b) {
+    b.classList.remove('selected');
+    b.style.background = 'transparent';
+    b.style.color = b.style.borderColor;
+  });
+  selectedEmoji = '';
+  selectedMood = '';
+}
+
+// ─── FILTER ───
+function filterCards(btn) {
+  document.querySelectorAll('.filter-chip').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  renderCards();
+}
+
+// ─── RENDER ───
+function renderCards() {
+  var cards = loadCards();
+  var grid = document.getElementById('fan-grid');
+  var empty = document.getElementById('empty-state');
+
+  var filtered = currentFilter === 'all' ? cards : cards.filter(function(c) { return c.emoji === currentFilter; });
+
+  // update counter
+  var counter = document.getElementById('soul-counter');
+  counter.textContent = cards.length === 0
+    ? 'be the first quiet soul ✦'
+    : cards.length + (cards.length === 1 ? ' quiet soul has found this place ✦' : ' quiet souls have found this place ✦');
+
+  // clear grid (keep empty state)
+  var existingCards = grid.querySelectorAll('.fan-card');
+  existingCards.forEach(function(c) { c.remove(); });
+
+  if (filtered.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  filtered.forEach(function(card, idx) {
+    var mc = moodColors[card.mood] || moodColors.amber;
+    var el = document.createElement('div');
+    el.className = 'fan-card';
+    el.style.setProperty('--card-accent', mc.primary + '55');
+    el.style.setProperty('--card-accent-line', mc.line);
+    el.style.animationDelay = (idx * 0.05) + 's';
+
+    var fields = '';
+    if (card.listening) {
+      fields += '<div class="card-field"><span class="card-field-label">listening →</span><span class="card-field-value">' + escHtml(card.listening) + '</span></div>';
+    }
+    if (card.reading) {
+      fields += '<div class="card-field"><span class="card-field-label">reading →</span><span class="card-field-value">' + escHtml(card.reading) + '</span></div>';
+    }
+
+    var joy = card.joy
+      ? '<div class="card-joy"><span class="card-joy-label">one quiet thing today</span>' + escHtml(card.joy) + '</div>'
+      : '';
+
+    el.innerHTML =
+      '<div class="card-top">' +
+        '<span class="card-emoji">' + card.emoji + '</span>' +
+        '<span class="card-date">' + card.date + '</span>' +
+      '</div>' +
+      '<div class="card-name">' + escHtml(card.name) + '</div>' +
+      (card.location ? '<div class="card-location">📍 ' + escHtml(card.location) + '</div>' : '') +
+      '<div class="card-bio">' + escHtml(card.bio) + '</div>' +
+      (fields ? '<div class="card-fields">' + fields + '</div>' : '') +
+      joy;
+
+    grid.appendChild(el);
+  });
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ─── INIT ───
+renderCards();
+</script>
+</body>
+</html>
