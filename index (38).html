@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>remy's world · lofi music for introverts</title>
+<meta name="description" content="remy dova makes lofi music for introverts. a handcrafted corner of the internet for quiet souls.">
+<meta name="theme-color" content="#0c0c18">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0c0c18;
+  --surf:    #13131f;
+  --surf2:   #1a1a2e;
+  --amber:   #d4956a;
+  --adim:    rgba(212,149,106,0.14);
+  --aborder: rgba(212,149,106,0.25);
+  --teal:    #7fb5a0;
+  --tdim:    rgba(127,181,160,0.14);
+  --lav:     #9b8bb4;
+  --text:    #e8ddd0;
+  --tdim2:   rgba(232,221,208,0.55);
+  --tmuted:  rgba(232,221,208,0.28);
+  --border:  rgba(232,221,208,0.08);
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Lora',serif; min-height:100vh; overflow-x:hidden;
+  cursor:none;
+}
+/* grain */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9998; opacity:0.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+@keyframes twinkle { from{opacity:0.1;transform:scale(0.8);} to{opacity:0.9;transform:scale(1.2);} }
+@keyframes petalFall {
+  0%{transform:translateY(-20px) rotate(0deg);opacity:0;}
+  10%{opacity:0.6;}
+  90%{opacity:0.2;}
+  100%{transform:translateY(105vh) rotate(360deg);opacity:0;}
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:none;} }
+
+/* fixed layers */
+#rain-canvas    { position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.35; }
+#stars-container{ position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden; }
+#petals-container{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden; }
+
+/* NAV */
+nav {
+  position:sticky; top:0; z-index:500;
+  background:rgba(12,12,24,0.9); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  height:56px; padding:0 2rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { font-family:'Caveat',cursive; font-size:1.3rem; color:var(--amber); text-decoration:none; letter-spacing:0.02em; }
+.nav-links { display:flex; gap:0.25rem; list-style:none; }
+.nav-links a {
+  font-family:'Caveat',cursive; font-size:1rem; color:var(--tdim2);
+  text-decoration:none; padding:0.3rem 0.7rem; border-radius:20px; transition:all 0.2s;
+}
+.nav-links a:hover,.nav-links a.active { color:var(--amber); background:var(--adim); }
+.nav-hideout {
+  font-family:'Caveat',cursive; font-size:0.85rem; color:var(--teal);
+  text-decoration:none; border:1px solid rgba(127,181,160,0.3);
+  padding:0.25rem 0.8rem; border-radius:20px; transition:all 0.2s;
+}
+.nav-hideout:hover { background:var(--tdim); }
+
+/* HERO */
+.hero {
+  min-height:100vh; display:flex; align-items:center;
+  position:relative; overflow:hidden; padding-top:56px;
+}
+.hero-bg {
+  position:absolute; inset:0; z-index:1;
+  background:url('assets/remyrain2.png') center / cover no-repeat;
+  opacity:0.08; pointer-events:none;
+}
+.hero-glow {
+  position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:600px; height:300px;
+  background:radial-gradient(ellipse at center bottom, rgba(212,149,106,0.12), transparent 70%);
+  pointer-events:none; z-index:2;
+}
+.hero-inner {
+  position:relative; z-index:10;
+  display:grid; grid-template-columns:1fr 440px;
+  align-items:center; gap:3rem;
+  max-width:1160px; margin:0 auto; padding:4rem 2.5rem; width:100%;
+}
+.hero-eyebrow {
+  font-family:'Caveat',cursive; font-size:0.85rem; color:var(--amber);
+  letter-spacing:0.15em; text-transform:uppercase; opacity:0.75;
+  margin-bottom:1rem; animation:fadeUp 0.6s 0.1s both;
+}
+.hero-h1 {
+  font-family:'Playfair Display',serif; font-size:clamp(2.2rem,4.5vw,3.4rem);
+  font-weight:400; line-height:1.15; margin-bottom:0.75rem;
+  animation:fadeUp 0.6s 0.2s both;
+}
+.hero-h1 em { color:var(--amber); font-style:italic; }
+.hero-tagline {
+  font-size:0.95rem; color:var(--tdim2); font-style:italic;
+  margin-bottom:1.25rem; animation:fadeUp 0.6s 0.3s both;
+}
+.hero-divider {
+  width:60px; height:2px; margin-bottom:1.25rem;
+  background:linear-gradient(90deg,var(--amber),transparent);
+  animation:fadeUp 0.6s 0.35s both;
+}
+.hero-about {
+  font-size:0.88rem; color:var(--tdim2); line-height:1.85;
+  max-width:460px; margin-bottom:1.75rem;
+  animation:fadeUp 0.6s 0.4s both;
+}
+.hero-links { display:flex; flex-wrap:wrap; gap:0.6rem; animation:fadeUp 0.6s 0.5s both; }
+.hero-link {
+  font-family:'Caveat',cursive; font-size:0.95rem; color:var(--tdim2);
+  text-decoration:none; border:1px solid var(--border);
+  padding:0.4rem 1rem; border-radius:20px; transition:all 0.2s;
+}
+.hero-link:hover { color:var(--text); border-color:var(--aborder); background:var(--adim); }
+.hero-link.primary { background:var(--amber); color:var(--bg); border-color:var(--amber); font-weight:600; }
+.hero-link.primary:hover { box-shadow:0 0 20px rgba(212,149,106,0.4); }
+.hero-img-wrap {
+  position:relative; animation:fadeUp 0.6s 0.3s both;
+  display:flex; justify-content:center;
+}
+.hero-img {
+  width:100%; max-width:420px; height:auto;
+  filter:drop-shadow(0 0 40px rgba(212,149,106,0.2));
+}
+.hero-nowplaying {
+  position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%);
+  font-family:'Caveat',cursive; font-size:0.8rem; color:var(--amber);
+  background:rgba(12,12,24,0.8); border:1px solid var(--aborder);
+  padding:0.3rem 0.8rem; border-radius:20px; white-space:nowrap;
+  backdrop-filter:blur(8px);
+}
+
+/* SECTIONS */
+section { padding:5rem 2.5rem; position:relative; z-index:10; }
+.section-inner { max-width:1100px; margin:0 auto; }
+.section-eyebrow {
+  font-family:'Caveat',cursive; font-size:0.85rem; color:var(--amber);
+  letter-spacing:0.15em; text-transform:uppercase; opacity:0.75; margin-bottom:0.75rem;
+}
+.section-h2 {
+  font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:400; margin-bottom:0.6rem;
+}
+.section-h2 em { color:var(--amber); font-style:italic; }
+.section-sub { font-size:0.88rem; color:var(--tdim2); font-style:italic; margin-bottom:2.5rem; }
+
+/* FEATURED CARDS */
+.featured-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.25rem; }
+.feat-card {
+  background:var(--surf); border:1px solid var(--border); border-radius:16px;
+  padding:1.75rem; text-decoration:none; color:var(--text);
+  transition:all 0.25s; position:relative; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+.feat-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--amber),rgba(212,149,106,0.2));
+}
+.feat-card:hover { border-color:var(--aborder); transform:translateY(-3px); box-shadow:0 8px 30px rgba(0,0,0,0.3); }
+.feat-card .card-tag { font-family:'Caveat',cursive; font-size:0.8rem; color:var(--amber); opacity:0.8; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; }
+.feat-card .card-title { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:400; margin-bottom:0.4rem; }
+.feat-card .card-desc { font-size:0.82rem; color:var(--tdim2); line-height:1.7; margin-bottom:1rem; }
+.feat-card .card-cta { font-family:'Caveat',cursive; font-size:0.95rem; color:var(--amber); }
+
+/* GUESTBOOK PREVIEW */
+.guest-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+.guest-card {
+  background:var(--surf); border:1px solid var(--border); border-radius:12px;
+  padding:1.25rem; position:relative;
+}
+.guest-card::before { content:''; position:absolute; top:-2px; left:20px; width:30px; height:4px; background:rgba(232,221,208,0.15); border-radius:2px; }
+.guest-emoji { font-size:1.2rem; margin-bottom:0.5rem; display:block; }
+.guest-msg { font-family:'Caveat',cursive; font-size:1rem; color:var(--tdim2); line-height:1.6; font-style:italic; margin-bottom:0.5rem; }
+.guest-name { font-size:0.75rem; color:var(--tmuted); }
+.guest-cta-wrap { text-align:center; }
+.guest-cta {
+  font-family:'Caveat',cursive; font-size:0.95rem; color:var(--teal);
+  text-decoration:none; border:1px solid rgba(127,181,160,0.3);
+  padding:0.45rem 1.25rem; border-radius:20px; transition:all 0.2s; display:inline-block;
+}
+.guest-cta:hover { background:var(--tdim); }
+
+/* ABOUT STRIP */
+.about-strip { background:var(--surf); border-radius:20px; padding:3rem; display:flex; gap:3rem; align-items:center; }
+.about-img { width:220px; height:220px; object-fit:cover; border-radius:16px; flex-shrink:0; filter:drop-shadow(0 0 20px rgba(212,149,106,0.15)); }
+.about-text h2 { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:400; margin-bottom:0.75rem; }
+.about-text h2 em { color:var(--amber); }
+.about-text p { font-size:0.88rem; color:var(--tdim2); line-height:1.9; margin-bottom:1rem; }
+.about-tags { display:flex; flex-wrap:wrap; gap:0.5rem; }
+.about-tag { font-family:'Caveat',cursive; font-size:0.85rem; color:var(--tdim2); background:var(--surf2); border:1px solid var(--border); padding:0.25rem 0.75rem; border-radius:20px; }
+
+/* EMAIL / SUBSTACK */
+.email-section { text-align:center; padding:5rem 2rem; }
+.email-inner { max-width:520px; margin:0 auto; }
+.email-inner h2 { font-family:'Playfair Display',serif; font-size:2rem; font-weight:400; margin-bottom:0.75rem; }
+.email-inner h2 em { color:var(--amber); }
+.email-inner p { font-size:0.88rem; color:var(--tdim2); line-height:1.85; font-style:italic; margin-bottom:2rem; }
+.email-btn {
+  display:inline-block; background:var(--amber); color:var(--bg);
+  font-family:'Playfair Display',serif; font-size:1rem; font-weight:700;
+  padding:0.9rem 2.5rem; border-radius:30px; text-decoration:none;
+  transition:all 0.25s; box-shadow:0 0 30px rgba(212,149,106,0.2);
+}
+.email-btn:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(212,149,106,0.4); }
+.email-note { font-family:'Caveat',cursive; font-size:0.8rem; color:var(--tmuted); margin-top:1rem; }
+
+
+
+/* FOOTER */
+footer {
+  text-align:center; padding:2.5rem 2rem 3rem;
+  border-top:1px solid var(--border); position:relative; z-index:10;
+}
+.footer-logo { font-family:'Caveat',cursive; font-size:1.1rem; color:var(--amber); display:block; margin-bottom:0.5rem; }
+.footer-hideout { font-family:'Caveat',cursive; font-size:0.85rem; color:var(--teal); text-decoration:none; display:block; margin-bottom:1rem; opacity:0.75; }
+.footer-nav { display:flex; gap:1.5rem; justify-content:center; margin-bottom:1rem; flex-wrap:wrap; }
+.footer-nav a { font-family:'Caveat',cursive; font-size:0.9rem; color:var(--tdim2); text-decoration:none; transition:color 0.2s; }
+.footer-nav a:hover { color:var(--amber); }
+.footer-social { display:flex; gap:1rem; justify-content:center; margin-bottom:1rem; }
+.footer-social a { font-family:'Caveat',cursive; font-size:0.85rem; color:var(--tdim2); text-decoration:none; transition:color 0.2s; }
+.footer-social a:hover { color:var(--amber); }
+.footer-copy { font-family:'Caveat',cursive; font-size:0.75rem; color:var(--tmuted); }
+
+/* RESPONSIVE */
+@media (max-width:900px) {
+  .hero-inner { grid-template-columns:1fr; text-align:center; padding:3rem 1.5rem; }
+  .hero-divider { margin:0 auto 1.25rem; }
+  .hero-links { justify-content:center; }
+  .hero-img-wrap { order:-1; }
+  .hero-img { max-width:280px; }
+  .about-strip { flex-direction:column; text-align:center; }
+  .about-tags { justify-content:center; }
+}
+@media (max-width:600px) {
+  nav { padding:0 1rem; }
+  .nav-links { gap:0; }
+  .nav-links a { font-size:0.9rem; padding:0.25rem 0.5rem; }
+  .nav-hideout { display:none; }
+  section { padding:3rem 1.25rem; }
+  
+}
+</style>
+</head>
+<body>
+
+<canvas id="rain-canvas"></canvas>
+<div id="stars-container"></div>
+<div id="petals-container"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">🌙 remy's world</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">home</a></li>
+    <li><a href="zine-builder.html">zine builder</a></li>
+    <li><a href="fan-pages.html">quiet souls</a></li>
+  </ul>
+  <a href="https://remydova.github.io/lofi-hideout/" target="_blank" class="nav-hideout">lofi hideout ☕</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">✦ welcome, quiet soul</div>
+      <h1 class="hero-h1">hey friend,<br>welcome to<br><em>remy's world</em> ☕</h1>
+      <p class="hero-tagline">lofi music for introverts · made with love · made for quiet souls</p>
+      <div class="hero-divider"></div>
+      <p class="hero-about">i make soft music in a small apartment with a cat named miso. this is a quiet corner of the internet — no tracking, no noise, no algorithm. just a warm place to land.</p>
+      <div class="hero-links">
+        <a href="https://www.youtube.com/@remydova" target="_blank" class="hero-link">▶ youtube</a>
+        <a href="https://open.spotify.com/artist/6iNFVldHhdj19hlOXawa3t/discography/all" target="_blank" class="hero-link">♫ spotify</a>
+        <a href="https://www.pinterest.com/remydova/" target="_blank" class="hero-link">✦ pinterest</a>
+        <a href="https://remydova.github.io/lofi-hideout/" target="_blank" class="hero-link primary">☕ lofi hideout</a>
+      </div>
+    </div>
+    <div class="hero-img-wrap">
+      <img src="assets/remy-no-bg.png" alt="remy dova" class="hero-img">
+      <div class="hero-nowplaying">🎵 making music at 10pm</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section id="featured">
+  <div class="section-inner">
+    <div class="section-eyebrow">✦ now in remy's world</div>
+    <h2 class="section-h2">what's <em>here</em></h2>
+    <p class="section-sub">a growing handcrafted world — music, zines, and a community of quiet souls</p>
+    <div class="featured-grid">
+      <a href="zine-builder.html" class="feat-card">
+        <div>
+          <div class="card-tag">zine builder</div>
+          <div class="card-title">generate your own handcrafted zine</div>
+          <div class="card-desc">six themes, five color moods, completely unique every time — made just for quiet souls like you.</div>
+        </div>
+        <span class="card-cta">✦ make a zine →</span>
+      </a>
+      <a href="fan-pages.html" class="feat-card">
+        <div>
+          <div class="card-tag">quiet souls</div>
+          <div class="card-title">claim your quiet soul card</div>
+          <div class="card-desc">a myspace-style community wall — make your own card and join the wall of quiet souls.</div>
+        </div>
+        <span class="card-cta">✦ join the wall →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-strip">
+      <img src="assets/remy-desk.png" alt="remy at her desk" class="about-img">
+      <div class="about-text">
+        <h2>i'm <em>remy</em> ✦</h2>
+        <p>i make lofi music in a small apartment with a cat named miso and too many browser tabs open. i make music in the small hours — layered, warm, imperfect in the best ways.</p>
+        <p>this little world is handcrafted for quiet souls like you. no tracking, no ads, no algorithm. just music and a warm corner of the internet.</p>
+        <div class="about-tags">
+          <span class="about-tag">🌙 lofi music</span>
+          <span class="about-tag">🐱 miso the cat</span>
+          <span class="about-tag">🧶 crocheting</span>
+          <span class="about-tag">📚 reading</span>
+          <span class="about-tag">🌧️ rain days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL CAPTURE -->
+<section class="email-section">
+  <div class="email-inner">
+    <div class="section-eyebrow" style="margin-bottom:0.75rem;">✦ quiet notes</div>
+    <h2><em>a monthly letter</em><br>for quiet souls</h2>
+    <p>on solitude, making things, slow mornings, and the beauty of a quiet life. no noise, no spam — just a warm letter once a month.</p>
+    <a href="https://remydova.substack.com/subscribe" target="_blank" class="email-btn">✦ subscribe to quiet notes</a>
+    <p class="email-note">free · no spam · unsubscribe anytime</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">🌙 remy's world</span>
+  <a href="https://remydova.github.io/lofi-hideout/" target="_blank" class="footer-hideout">need a quiet moment? → lofi hideout ☕</a>
+  <nav class="footer-nav">
+    <a href="index.html">home</a>
+    <a href="zine-builder.html">zine builder</a>
+    <a href="fan-pages.html">quiet souls</a>
+  </nav>
+  <div class="footer-social">
+    <a href="https://www.youtube.com/@remydova" target="_blank">youtube</a>
+    <a href="https://open.spotify.com/artist/6iNFVldHhdj19hlOXawa3t/discography/all" target="_blank">spotify</a>
+    <a href="https://www.pinterest.com/remydova/" target="_blank">pinterest</a>
+  </div>
+  <p class="footer-copy">made with love for quiet souls · no tracking, no ads ✦</p>
+  <a href="https://open.spotify.com/artist/6iNFVldHhdj19hlOXawa3t/discography/all" target="_blank" 
+    style="display:inline-block;margin-top:0.75rem;font-family:'Caveat',cursive;font-size:0.9rem;color:#7fb5a0;text-decoration:none;border:1px solid rgba(127,181,160,0.3);padding:0.3rem 1rem;border-radius:20px;transition:all 0.2s;">♫ listen on spotify</a>
+</footer>
+
+<script>
+// MOON CURSOR
+(function() {
+  var cur = document.createElement('div');
+  cur.textContent = '🌙';
+  cur.style.cssText = 'position:fixed;pointer-events:none;z-index:99999;font-size:20px;transform:translate(-50%,-50%);transition:transform 0.08s;filter:drop-shadow(0 0 6px rgba(212,149,106,0.6));top:-40px;left:-40px;';
+  document.body.appendChild(cur);
+  document.addEventListener('mousemove', function(e) { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+  document.addEventListener('mousedown', function() { cur.style.transform='translate(-50%,-50%) scale(0.75)'; });
+  document.addEventListener('mouseup', function() { cur.style.transform='translate(-50%,-50%) scale(1)'; });
+})();
+
+// RAIN
+(function() {
+  var c = document.getElementById('rain-canvas');
+  var ctx = c.getContext('2d');
+  var drops = [];
+  function resize() { c.width=window.innerWidth; c.height=window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  for (var i=0; i<100; i++) drops.push({
+    x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight,
+    len: Math.random()*15+8, speed: Math.random()*2+1.5, op: Math.random()*0.25+0.05
+  });
+  function draw() {
+    ctx.clearRect(0,0,c.width,c.height);
+    drops.forEach(function(d) {
+      ctx.beginPath(); ctx.moveTo(d.x,d.y); ctx.lineTo(d.x-d.len*0.2,d.y+d.len);
+      ctx.strokeStyle='rgba(180,200,220,'+d.op+')'; ctx.lineWidth=0.8; ctx.stroke();
+      d.y+=d.speed; if(d.y>c.height){d.y=-d.len;d.x=Math.random()*c.width;}
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// STARS
+(function() {
+  var sc=document.getElementById('stars-container');
+  for(var i=0;i<70;i++){
+    var s=document.createElement('div'); var sz=Math.random()*2.5+0.5;
+    s.style.cssText='position:absolute;border-radius:50%;background:rgba(232,221,208,0.8);width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation:twinkle '+(Math.random()*3+2)+'s ease-in-out '+(Math.random()*4)+'s infinite alternate;';
+    sc.appendChild(s);
+  }
+})();
+
+// PETALS
+(function() {
+  var pc=document.getElementById('petals-container');
+  var ch=['✿','❀','✽','❁'];
+  for(var i=0;i<18;i++){
+    var p=document.createElement('div');
+    p.textContent=ch[i%ch.length];
+    p.style.cssText='position:absolute;top:-20px;font-size:0.8rem;color:rgba(212,149,106,0.5);left:'+Math.random()*100+'vw;animation:petalFall '+(Math.random()*14+10)+'s '+(Math.random()*12)+'s linear infinite;';
+    pc.appendChild(p);
+  }
+})();
+
+
+
+// VISITORS COUNTER (decorative)
+(function() {
+  try {
+    var key = 'remy-visitors';
+    var n = parseInt(localStorage.getItem(key)||'0',10);
+    n = n ? n : Math.floor(Math.random()*800+200);
+    localStorage.setItem(key, n+1);
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
