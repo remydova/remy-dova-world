@@ -1,0 +1,6 @@
+# remy's world · github pages config
+include:
+  - assets/audio
+
+# allow audio files
+plugins: []
